@@ -1,0 +1,152 @@
+import React from 'react'
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+const Signup = () => {
+  const router = useRouter()
+  const [fname, setFname] = useState()
+  const [lname, setLname] = useState()
+  const [gender, setGender] = useState()
+  const [number, setNumber] = useState()
+  const [email, setEmail] = useState()
+  const [birthday, setBirthday] = useState()
+  const [password, setPassword] = useState()
+  const [confirmPassword, setConfirmPassword] = useState()
+
+  useEffect(() => {
+    if (localStorage.getItem('mycreator')) {
+      router.push('/')
+    }
+  }, [])
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error('Passwords do not match!☠️', {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      return;
+    }
+    const data = { fname, birthday, lname, gender, number, email, password }
+    let res = await fetch(`${process.env.NEXT_PUBLIC_HOST}/api/signup-creator`, {
+      method: 'POST', // or 'PUT'
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    let response = await res.json()
+    console.log(response)
+    setFname('')
+    setBirthday('')
+    setLname('')
+    setGender('')
+    setNumber('')
+    setEmail('')
+    setPassword('')
+    setConfirmPassword('')
+    toast.success('Your account has been created!✅', {
+      position: "bottom-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
+
+  return (
+    <section className="bg-[#0A0B0D] text-white pt-20">
+      <div className="flex justify-center min-h-screen">
+        <div className="hidden bg-cover lg:block lg:w-2/5" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1494621930069-4fd4b2e24a11?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=715&q=80')" }}>
+        </div>
+
+        <div className="flex items-center w-full max-w-3xl p-8 mx-auto lg:px-12 lg:w-3/5">
+          <div className="w-full">
+            <h1 className="text-2xl font-semibold tracking-wider capitalize">
+              Make your creator account today
+            </h1>
+
+            <p className="mt-4">
+              Let’s get you all set up so you can verify your creator account and begin setting up your profile.
+            </p>
+
+            <form className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2" method="POST" onSubmit={handleSubmit}>
+              <div>
+                <label htmlFor='firstName' className="block mb-2 text-sm">First Name</label>
+                <input id='firstName' name='firstName' value={fname} onChange={(e) => setFname(e.target.value)} type="text" placeholder="John" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+
+              <div>
+                <label htmlFor='lastName' className="block mb-2 text-sm">Last name</label>
+                <input id='lastName' name='lastName' value={lname} onChange={(e) => setLname(e.target.value)} type="text" placeholder="Snow" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <div>
+                <label htmlFor='gender' className="block mb-2 text-sm">Gender</label>
+                <select id='gender' name='gender' value={gender} onChange={(e) => setGender(e.target.value)} className="block mb-2 text-sm w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" >
+                  <option defaultValue className="block mb-2 text-sm text-gray-700">Select your gender</option>
+                  <option className="block mb-2 text-sm text-gray-700">Male</option>
+                  <option className="block mb-2 text-sm text-gray-700">Female</option>
+                  <option className="block mb-2 text-sm text-gray-700">Other</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor='birthday' className="block mb-2 text-sm">Birthday (dd/mm/yyyy)</label>
+                <input id='birthday' name='birthday' value={birthday} onChange={(e) => setBirthday(e.target.value)} type="text" placeholder="20/10/2003" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <div>
+                <label htmlFor='number' className="block mb-2 text-sm">Phone number</label>
+                <input id='number' name='number' value={number} onChange={(e) => setNumber(e.target.value)} type="number" placeholder="XXX-XX-XXXX-XXX" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <div>
+                <label htmlFor='email' className="block mb-2 text-sm">Email address</label>
+                <input id='email' name='email' value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="johnsnow@example.com" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <div>
+                <label htmlFor='password' className="block mb-2 text-sm">Password</label>
+                <input id='password' name='password' value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <div>
+                <label htmlFor='confirmPassword' className="block mb-2 text-sm">Confirm password</label>
+                <input id='confirmPassword' name='confirmPassword' value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} type="password" placeholder="Enter your password" className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40" />
+              </div>
+
+              <button type='submit'
+                className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-sky-700 rounded-md hover:bg-sky-600 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+                <span>Sign Up </span>
+
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd" />
+                </svg>
+              </button>
+            </form>
+            <p className="mt-6 text-sm md:text-left text-center text-gray-400 flex">Already have an account? <Link href='/login'><span className="text-blue-500 focus:outline-none focus:underline hover:underline ml-1">Sign in</span></Link>.</p>
+            <p className="mt-6 text-sm md:text-left text-center text-gray-400 flex"><Link href='/login-creator'><span className="text-blue-500 focus:outline-none focus:underline hover:underline ml-1">Creator Sign in</span></Link>.</p>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default Signup
